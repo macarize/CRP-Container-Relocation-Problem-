@@ -38,32 +38,45 @@ def moveContainer(bay, originalWidth, originalHeight, width, height):
 
     bay[height][width] = temp
 
-def R1(bay, width, height, maxHeight):
+def R1(bay, width, maxHeight):
     satisfyR1 = np.array([])
     topindex = -1
+    min = 6 - width
+    index = -1
     for i in range(0, np.size(bay, 0)):
         if bay[i][width] != 0:
             topindex = i
             break
-    print(topindex)
     for i in range(0,np.size(bay, 1)):
         bool = "yes"
-        print('outer', i)
         for j in range(0, np.size(bay, 0)):
-            if bay[j][i] <= bay[topindex][width] and bay[j][i] != 0 :
+            if bay[j][i] <= bay[topindex][width] and bay[j][i] != 0:
                 bool = "no"
-            print("inner", j)
+        if bay[maxHeight][i] == 0:
+            bool = "no"
         if bool == "yes":
             satisfyR1 = np.append(satisfyR1, [i])
 
-        print(satisfyR1)
     for i in range(0, satisfyR1.size):
-        min = 100
-        if np.absolute(width - i) < min:
-            min = np.absolute(width - i)
-    return satisfyR1[min]
+        if np.absolute(width - satisfyR1[i]) < min:
+            min = np.absolute(width - satisfyR1[i])
+            index = satisfyR1[i]
+    return index
+
+def R2(bay, width, maxHeight):
+    satisfyR2 = np.array([])
+    min = 6 - width
+    index = -1
+    for i in range(0, np.size(bay,1)):
+        if bay[maxHeight][i] == 0:
+            satisfyR2 = np.append(satisfyR2, [i])
+    for i in range(0, satisfyR2.size):
+        if np.absolute(width - satisfyR2[i]) < min:
+            min = np.absolute(width - satisfyR2[i])
+            index = satisfyR2[i]
+    return index
 
 i, j = findUrgentContainer(bay)
 print(i, j)
-print(R1(bay, 2, 2, 2))
-
+print(R1(bay, 2, 2))
+print(R2(bay, 2, 2))
