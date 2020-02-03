@@ -31,13 +31,24 @@ def findUrgentContainer(bay):
                 width = j
                 min = bay[i][j]
     return height, width
-
+def isMoveAble(bay, originalWidth, originalHeight):
+    if originalHeight == 0:
+        return True
+    elif bay[originalHeight-1][originalWidth] != 0:
+        return False
+    else:
+        True
 def moveContainer(bay, originalWidth, originalHeight, width, height):
     temp = bay[originalWidth][originalHeight]
     bay[originalWidth][originalHeight] = 0
 
     bay[height][width] = temp
-
+def isBayEmpty(bay):
+    for i in range(0, len(bay)):
+        for j in range(0, len(bay[0])):
+            if bay[i][j] != 0:
+                return False
+    return True
 def R1(bay, width, maxHeight):
     satisfyR1 = np.array([])
     topindex = -1
@@ -76,7 +87,40 @@ def R2(bay, width, maxHeight):
             index = satisfyR2[i]
     return index
 
+def R3(bay, width, maxHeight):
+    skylines = np.array([])
+    index = -1
+    min = 6 - width
+    for i in range(0, np.size(bay, 1)):
+        index = 2
+        for j in range(0, np.size(bay, 0)):
+            if bay[j][i] != 0:
+                index = j
+                break
+        skylines = np.append(skylines, [maxHeight-index])
+    minimum = np.amin(skylines)
+    indices = [i for i, v in enumerate(skylines) if v == minimum]
+    for i in indices:
+        if np.absolute(width - i) < min and np.absolute(width - i) != 0:
+            min = np.absolute(width - i)
+            index = i
+    return index
+def R4(bay, width, maxHeight):
+    satisfyR4 = np.array([])
+    min = 6 - width
+    index = -1
+    for i in range(0, np.size(bay, 1)):
+        if bay[0][i] == 0:
+            satisfyR4 = np.append(satisfyR4, [i])
+    for i in satisfyR4:
+        if np.absolute(width - i) < min and np.absolute(width - i) != 0 :
+            min = np.absolute(width - i)
+            index = i
+    return index
+
 i, j = findUrgentContainer(bay)
 print(i, j)
 print(R1(bay, 2, 2))
 print(R2(bay, 2, 2))
+print(R3(bay, 2, 2))
+print(R4(bay, 2, 2))
