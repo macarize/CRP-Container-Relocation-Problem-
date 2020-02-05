@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 bay = np.zeros((3, 7), dtype=int)
 
@@ -38,17 +39,26 @@ def isMoveAble(bay, originalWidth, originalHeight):
         return False
     else:
         True
-def moveContainer(bay, originalWidth, originalHeight, width, height):
-    temp = bay[originalWidth][originalHeight]
-    bay[originalWidth][originalHeight] = 0
 
-    bay[height][width] = temp
+def moveContainer(bay, originalWidth, originalHeight, width, maxheight):
+    temp = bay[originalHeight][originalWidth]
+    bay[originalHeight][originalWidth] = 0
+
+    topIndex = -1
+    for i in range(0, maxheight):
+        if bay[i][width] == 0:
+            topIndex = i
+        print(i)
+
+    bay[topIndex][width] = temp
 def isBayEmpty(bay):
     for i in range(0, len(bay)):
         for j in range(0, len(bay[0])):
             if bay[i][j] != 0:
                 return False
     return True
+def retrieveContainer(bay, width, height):
+    bay[height][width] = 0
 def R1(bay, width, maxHeight):
     satisfyR1 = np.array([])
     topindex = -1
@@ -117,10 +127,28 @@ def R4(bay, width, maxHeight):
             min = np.absolute(width - i)
             index = i
     return index
-
+def generateChromosome():
+    chromosome = np.array([])
+    for i in range (0, 100):
+        chromosome = random.randrange(1, 5)
+    return chromosome
 i, j = findUrgentContainer(bay)
 print(i, j)
 print(R1(bay, 2, 2))
 print(R2(bay, 2, 2))
 print(R3(bay, 2, 2))
 print(R4(bay, 2, 2))
+print(isMoveAble(bay, 2, 2))
+print(generateChromosome())
+for i in range(0, np. size(bay, 0)):
+    for j in range(0, np.size(bay, 1)):
+        print(bay[i][j], end="   ")
+    print("\n")
+
+moveContainer(bay, 3, 0, 2, 2)
+print("\n")
+
+for i in range(0, np. size(bay, 0)):
+    for j in range(0, np.size(bay, 1)):
+        print(bay[i][j], end="   ")
+    print("\n")
