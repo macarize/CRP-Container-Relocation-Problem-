@@ -1,77 +1,88 @@
 import numpy as np
 import random
 
-bay = np.zeros((3, 7), dtype=int)
 
-bay[0][3] = 9
-bay[0][5] = 8
-bay[1][0] = 6
-bay[1][0] = 6
-bay[1][2] = 5
-bay[1][3] = 7
-bay[1][5] = 11
-bay[2][0] = 10
-bay[2][1] = 2
-bay[2][2] = 1
-bay[2][3] = 3
-bay[2][5] = 4
+def bayInit():
+    bay = np.zeros((3, 7), dtype=int)
+
+    bay[0][3] = 9
+    bay[0][5] = 8
+    bay[1][0] = 6
+    bay[1][0] = 6
+    bay[1][2] = 5
+    bay[1][3] = 7
+    bay[1][5] = 11
+    bay[2][0] = 10
+    bay[2][1] = 2
+    bay[2][2] = 1
+    bay[2][3] = 3
+    bay[2][5] = 4
+    return bay
+
 
 def findUrgentContainer(bay):
-    min= 0
-    height = 0
-    width = 0
-    for i in range(0, np.size(bay, 0)):
-        for j in range(0, np.size(bay,1)):
-            if bay[i][j] != 0:
-                min = bay[i][j]
-                break
+    min= np.size(bay)
+    y = -1
+    x = -1
     for i in range(0, np.size(bay, 0)):
         for j in range(0, np.size(bay,1)):
             if bay[i][j] < min and bay[i][j] > 0:
-                height= i
-                width = j
+                y = i
+                x = j
                 min = bay[i][j]
-    return height, width
-def isMoveAble(bay, originalWidth, originalHeight):
-    if originalHeight == 0:
+    return y, x
+
+
+def isMoveAble(bay, originalY, originalX):
+    if originalY == 0:
         return True
-    elif bay[originalHeight-1][originalWidth] != 0:
+    elif bay[originalY-1][originalX] != 0:
         return False
     else:
-        True
+        return True
 
-def moveContainer(bay, originalWidth, originalHeight, width, maxheight):
-    temp = bay[originalHeight][originalWidth]
-    bay[originalHeight][originalWidth] = 0
 
-    topIndex = -1
-    for i in range(0, maxheight):
-        if bay[i][width] == 0:
+def moveContainer(bay, originalX, x, maxheight):
+    topIndex = 2
+    x = int(x)
+    for i in reversed(range(0, maxheight+1)):
+        if bay[i][originalX] != 0:
             topIndex = i
-        print(i)
+    temp = bay[topIndex][originalX]
+    bay[topIndex][originalX] = 0
+    topIndex = 2
+    for i in reversed(range(0, maxheight+1)):
+        if bay[i][x] != 0:
+            topIndex = i-1
+    bay[topIndex][x] = temp
+    return topIndex
 
-    bay[topIndex][width] = temp
+
 def isBayEmpty(bay):
     for i in range(0, len(bay)):
         for j in range(0, len(bay[0])):
             if bay[i][j] != 0:
                 return False
     return True
-def retrieveContainer(bay, width, height):
-    bay[height][width] = 0
-def R1(bay, width, maxHeight):
+
+
+def retrieveContainer(bay, y, x):
+    bay[y][x] = 0
+
+
+def R1(bay, x, maxHeight, maxWidth):
     satisfyR1 = np.array([])
     topindex = -1
-    min = 6 - width
+    min = maxWidth - x
     index = -1
     for i in range(0, np.size(bay, 0)):
-        if bay[i][width] != 0:
+        if bay[i][x] != 0:
             topindex = i
             break
     for i in range(0,np.size(bay, 1)):
         bool = "yes"
         for j in range(0, np.size(bay, 0)):
-            if bay[j][i] <= bay[topindex][width] and bay[j][i] != 0:
+            if bay[j][i] <= bay[topindex][x] and bay[j][i] != 0:
                 bool = "no"
         if bay[maxHeight][i] == 0:
             bool = "no"
@@ -79,28 +90,30 @@ def R1(bay, width, maxHeight):
             satisfyR1 = np.append(satisfyR1, [i])
 
     for i in range(0, satisfyR1.size):
-        if np.absolute(width - satisfyR1[i]) < min:
-            min = np.absolute(width - satisfyR1[i])
+        if np.absolute(x - satisfyR1[i]) < min:
+            min = np.absolute(x - satisfyR1[i])
             index = satisfyR1[i]
     return index
 
-def R2(bay, width, maxHeight):
+
+def R2(bay, x, maxHeight, maxWidth):
     satisfyR2 = np.array([])
-    min = 6 - width
+    min = maxWidth - x
     index = -1
     for i in range(0, np.size(bay,1)):
         if bay[maxHeight][i] == 0:
             satisfyR2 = np.append(satisfyR2, [i])
     for i in range(0, satisfyR2.size):
-        if np.absolute(width - satisfyR2[i]) < min:
-            min = np.absolute(width - satisfyR2[i])
+        if np.absolute(x - satisfyR2[i]) < min:
+            min = np.absolute(x - satisfyR2[i])
             index = satisfyR2[i]
     return index
 
-def R3(bay, width, maxHeight):
+
+def R3(bay, x, maxHeight, maxWidth):
     skylines = np.array([])
     index = -1
-    min = 6 - width
+    min = maxWidth - x
     for i in range(0, np.size(bay, 1)):
         index = 2
         for j in range(0, np.size(bay, 0)):
@@ -111,44 +124,124 @@ def R3(bay, width, maxHeight):
     minimum = np.amin(skylines)
     indices = [i for i, v in enumerate(skylines) if v == minimum]
     for i in indices:
-        if np.absolute(width - i) < min and np.absolute(width - i) != 0:
-            min = np.absolute(width - i)
+        if np.absolute(x - i) < min and np.absolute(x - i) != 0:
+            min = np.absolute(x - i)
             index = i
     return index
-def R4(bay, width, maxHeight):
+
+
+def R4(bay, x, maxHeight, maxWidth):
     satisfyR4 = np.array([])
-    min = 6 - width
+    min = maxWidth - x
     index = -1
     for i in range(0, np.size(bay, 1)):
         if bay[0][i] == 0:
             satisfyR4 = np.append(satisfyR4, [i])
     for i in satisfyR4:
-        if np.absolute(width - i) < min and np.absolute(width - i) != 0 :
-            min = np.absolute(width - i)
+        if np.absolute(x - i) < min and np.absolute(x - i) != 0 :
+            min = np.absolute(x - i)
             index = i
     return index
+
+
 def generateChromosome():
-    chromosome = np.array([])
+    chromosome = []
     for i in range (0, 100):
-        chromosome = random.randrange(1, 5)
+        chromosome.append(random.randrange(1, 5))
     return chromosome
-i, j = findUrgentContainer(bay)
-print(i, j)
-print(R1(bay, 2, 2))
-print(R2(bay, 2, 2))
-print(R3(bay, 2, 2))
-print(R4(bay, 2, 2))
-print(isMoveAble(bay, 2, 2))
-print(generateChromosome())
-for i in range(0, np. size(bay, 0)):
-    for j in range(0, np.size(bay, 1)):
-        print(bay[i][j], end="   ")
-    print("\n")
 
-moveContainer(bay, 3, 0, 2, 2)
-print("\n")
 
-for i in range(0, np. size(bay, 0)):
-    for j in range(0, np.size(bay, 1)):
-        print(bay[i][j], end="   ")
-    print("\n")
+def getMaxWidth(bay):
+    return len(bay[0])
+
+
+def move(bay, chromosome, maxWidth):
+    index = 0
+    maxheight = 2
+    moves = np.array([])
+    while isBayEmpty(bay) == False:
+        y, x = findUrgentContainer(bay)
+        y = int(y)
+        x = int(x)
+        if isMoveAble(bay, y, x):
+            retrieveContainer(bay, y, x)
+        else:
+            if chromosome[index] == 1 and R1(bay, x, maxheight, maxWidth) != None:
+                i = int(R1(bay, x, maxheight, maxWidth))
+                topIndex = moveContainer(bay, x, i, maxheight)
+                moves = np.append(moves, [x, i, topIndex], axis=0)
+            elif chromosome[index] == 2 and R2(bay, x, maxheight, maxWidth) != None:
+                i = R2(bay, x, maxheight, maxWidth)
+                topIndex = moveContainer(bay, x, i, maxheight)
+                moves = np.append(moves, [x, i, topIndex], axis=0)
+            elif chromosome[index] == 3 and R3(bay, x, maxheight, maxWidth) != None:
+                i = R3(bay, x, maxheight, maxWidth)
+                topIndex = moveContainer(bay, x, i, maxheight)
+                moves = np.append(moves, [x, i, topIndex], axis=0)
+            elif chromosome[index] == 4 and R4(bay, x, maxheight , maxWidth) != None:
+                i = R4(bay, x, maxheight, maxWidth)
+                topIndex = moveContainer(bay, x, i, maxheight)
+                moves = np.append(moves, [x, i, topIndex], axis=0)
+            index += 1
+
+        for i in range(0, np.size(bay, 0)):
+            for j in range(0, np.size(bay, 1)):
+                print(bay[i][j], end="   ")
+            print("\n")
+        print("\n")
+
+    moves = np.reshape(moves, (int(moves.size/3), 3))
+    return chromosome, moves, index
+
+
+def calChromosomePool(bay, chromosomePool):
+    maxWidth = getMaxWidth(bay)
+    times = np.array([])
+
+    for i in range(0, len(chromosomePool)):
+        bay = bayInit()
+        c, m, ind = move(bay, chromosomePool[i], maxWidth)
+        moves.append([m])
+        times = np.append(times, ind)
+        chromosomePool.append([c])
+    return chromosomePool, moves, times
+
+
+def chromosomeSelect(times):
+    middle = np.median(times)
+    selectedIndexes = np.array([])
+    for i in range(0, len(times)):
+        if times[i] < middle:
+            selectedIndexes = np.append(selectedIndexes, i)
+    return selectedIndexes
+
+def crossover(indexes, chromosomePool):
+    newChromosome = []
+    for i in range(0, int(indexes.size/2)):
+        temp = chromosomePool[i][:int(len(chromosomePool[i])/2)]
+        temp2 = chromosomePool[i+1][int(len(chromosomePool[i+1])/2):]
+        temp = temp + temp2
+        newChromosome.append(temp)
+    return newChromosome
+
+
+bay = bayInit()
+chromosomePool = []
+moves = []
+times = []
+indexes = np.array([])
+maxWidth = getMaxWidth(bay)
+
+for i in range (0, 10):
+    chromosomePool.append(generateChromosome())
+
+while len(chromosomePool) != 1 and len(chromosomePool) != 0:
+    chromosomePool, moves, times = calChromosomePool(bay, chromosomePool)
+    indexes = chromosomeSelect(times)
+    chromosomePool = crossover(indexes, chromosomePool)
+print(indexes)
+print(times)
+for i in indexes:
+    print(moves[int(i)])
+
+
