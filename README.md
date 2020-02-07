@@ -9,7 +9,7 @@ Due to the increase in world container transport in recent years, there is a nee
    - R1
        1.1 a container is located in the stack  
        1.2 there is a free position in the stack considering the maximum stacking height  
-       1.3 the priority of the blocking container is higher that the priorities of all the containers that are currently located in the stack
+       1.3 the priority of the blocking container is higher that the priorities of all the containers that are currently located in the stack  
        ![R1](https://user-images.githubusercontent.com/54901021/74013311-7e0c1380-49cf-11ea-8014-a71de371b80f.PNG)
     - R2
        2.1 relocate the container to the nearest empty stack
