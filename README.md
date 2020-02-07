@@ -27,7 +27,7 @@ Due to the increase in world container transport in recent years, there is a nee
 4. Average relocations
 ![avgRelocations](https://user-images.githubusercontent.com/54901021/74013326-882e1200-49cf-11ea-82dc-202cb2a1d874.PNG)
 5. 6X3(Tiersxstacks) Results of the implementation of this paper 
-- Bay satae
+- Bay satae  
 ![bay](https://user-images.githubusercontent.com/54901021/74013966-02ab6180-49d1-11ea-97ca-b084c201fbac.PNG)
 - Randomly relocated (avg : 7.8 relocations)
 ![non-GA](https://user-images.githubusercontent.com/54901021/74013320-849a8b00-49cf-11ea-8eb3-1f92899d2de0.png)
