@@ -7,6 +7,6 @@ Due to the increase in world container transport in recent years, there is a nee
 
 2. Relocation Rules
    - R1
-     a container is located in the stack
-     there is a free position in the stack considering the maximum stacking height
+     a container is located in the stack  
+     there is a free position in the stack considering the maximum stacking height  
      the priority of the blocking container is higher that the priorities of all the containers that are currently located in the stack
