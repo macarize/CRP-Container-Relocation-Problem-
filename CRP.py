@@ -1,6 +1,6 @@
 import numpy as np
 import random
-
+import matplotlib.pyplot as plt
 
 def bayInit():
     bay = np.zeros((3, 7), dtype=int)
@@ -184,11 +184,11 @@ def move(bay, chromosome, maxWidth):
                 moves = np.append(moves, [x, i, topIndex], axis=0)
             index += 1
 
-        for i in range(0, np.size(bay, 0)):
+        """for i in range(0, np.size(bay, 0)):
             for j in range(0, np.size(bay, 1)):
                 print(bay[i][j], end="   ")
             print("\n")
-        print("\n")
+        print("\n")"""
 
     moves = np.reshape(moves, (int(moves.size/3), 3))
     return chromosome, moves, index
@@ -213,10 +213,14 @@ def chromosomeSelect(times):
     for i in range(0, len(times)):
         if times[i] < middle:
             selectedIndexes = np.append(selectedIndexes, i)
+    if selectedIndexes.size == 0:
+        selectedIndexes = np.append(selectedIndexes, 0)
     return selectedIndexes
 
 def crossover(indexes, chromosomePool):
     newChromosome = []
+    #if len(chromosomePool) % 2 == 1:
+    #   chromosomePool.append(chromosomePool[len(chromosomePool)])
     for i in range(0, int(indexes.size/2)):
         temp = chromosomePool[i][:int(len(chromosomePool[i])/2)]
         temp2 = chromosomePool[i+1][int(len(chromosomePool[i+1])/2):]
@@ -225,23 +229,56 @@ def crossover(indexes, chromosomePool):
     return newChromosome
 
 
+def GA():
+    bay = bayInit()
+    chromosomePool = []
+    moves = []
+    times = []
+    indexes = np.array([])
+    maxWidth = getMaxWidth(bay)
+
+    for i in range (0, 1000):
+        chromosomePool.append(generateChromosome())
+
+    while len(chromosomePool) > 0:
+        chromosomePool, moves, times = calChromosomePool(bay, chromosomePool)
+        indexes = chromosomeSelect(times)
+        chromosomePool = crossover(indexes, chromosomePool)
+    return times[int(indexes)]
+
+
+def RandomMoves() :
+    bay = bayInit()
+    chromosomePool = []
+    moves = []
+    times = []
+    indexes = np.array([])
+    maxWidth = getMaxWidth(bay)
+
+    chromosomePool.append(generateChromosome())
+
+    while len(chromosomePool) > 0:
+        chromosomePool, moves, times = calChromosomePool(bay, chromosomePool)
+        indexes = chromosomeSelect(times)
+        chromosomePool = crossover(indexes, chromosomePool)
+    return times
+
+
 bay = bayInit()
 chromosomePool = []
 moves = []
 times = []
 indexes = np.array([])
 maxWidth = getMaxWidth(bay)
-
-for i in range (0, 10):
-    chromosomePool.append(generateChromosome())
-
-while len(chromosomePool) != 1 and len(chromosomePool) != 0:
-    chromosomePool, moves, times = calChromosomePool(bay, chromosomePool)
-    indexes = chromosomeSelect(times)
-    chromosomePool = crossover(indexes, chromosomePool)
-print(indexes)
-print(times)
-for i in indexes:
-    print(moves[int(i)])
-
-
+GAtimes = []
+"""for i in range(0, 500):
+    times = np.append(times, RandomMoves())"""
+"""print(np.average(times))"""
+for i in range(0, 1000):
+    GAtimes = np.append(GAtimes, GA())
+    print(i)
+print(np.average(GAtimes))
+axes = plt.gca()
+axes.set_ylim([3,35])
+plt.plot(GAtimes)
+plt.show()
