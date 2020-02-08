@@ -31,6 +31,5 @@ Due to the increase in world container transport in recent years, there is a nee
 ![bay](https://user-images.githubusercontent.com/54901021/74013966-02ab6180-49d1-11ea-97ca-b084c201fbac.PNG)
 - Randomly relocated (avg : 7.8 relocations)
 ![non-GA](https://user-images.githubusercontent.com/54901021/74013320-849a8b00-49cf-11ea-8eb3-1f92899d2de0.png)
-- GA used (avg : 6.88 relocations)
-![GA](https://user-images.githubusercontent.com/54901021/74012256-24a2e500-49cd-11ea-84c5-c46f48d1643f.png)
-  
+- GA used (avg : 5.779 relocations)
+![GA_1](https://user-images.githubusercontent.com/54901021/74089039-3de88600-4ae0-11ea-95c5-72e4bc8d7a73.png)  
