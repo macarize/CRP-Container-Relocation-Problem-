@@ -232,6 +232,8 @@ def crossover(indexes, chromosomePool):
 def GA():
     bay = bayInit()
     chromosomePool = []
+    upperChromosome = []
+
     moves = []
     times = []
     indexes = np.array([])
@@ -240,11 +242,14 @@ def GA():
     for i in range (0, 1000):
         chromosomePool.append(generateChromosome())
 
-    while len(chromosomePool) > 0:
+    for i in range(0, 10):
+        bay = bayInit()
         chromosomePool, moves, times = calChromosomePool(bay, chromosomePool)
         indexes = chromosomeSelect(times)
-        chromosomePool = crossover(indexes, chromosomePool)
-    return times[int(indexes)]
+        for j in indexes:
+            upperChromosome.append(chromosomePool[int(j)])
+        chromosomePool = upperChromosome + crossover(indexes, chromosomePool)
+    return times[int(indexes)], moves, chromosomePool
 
 
 def RandomMoves() :
@@ -274,11 +279,14 @@ GAtimes = []
 """for i in range(0, 500):
     times = np.append(times, RandomMoves())"""
 """print(np.average(times))"""
-for i in range(0, 1000):
-    GAtimes = np.append(GAtimes, GA())
+for i in range(0, 10):
+    GAtime, GAmoves, GAchromosome = GA()
+    GAtimes = np.append(GAtimes, GAtime)
     print(i)
+    print(GAmoves[len(GAmoves) - 1])
 print(np.average(GAtimes))
 axes = plt.gca()
 axes.set_ylim([3,35])
 plt.plot(GAtimes)
 plt.show()
+
